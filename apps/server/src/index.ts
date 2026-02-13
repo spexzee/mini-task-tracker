@@ -26,8 +26,11 @@ import taskRoutes from './routes/task.routes';
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 
+import connectRedis from './config/redis';
+
 const startServer = async () => {
     await connectDB();
+    await connectRedis();
     app.listen(config.port, () => {
         console.log(`🚀 Server running on http://localhost:${config.port}`);
     });
