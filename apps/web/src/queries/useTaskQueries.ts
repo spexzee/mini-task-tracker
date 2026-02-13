@@ -35,7 +35,31 @@ export const useCreateTaskMutation = () => {
     return useMutation({
         mutationFn: (data: CreateTaskData) =>
             useApi<Task>('POST', '/api/tasks', data),
-        onSuccess: () => {
+        onMutate: async (newTask) => {
+            await queryClient.cancelQueries({ queryKey: TASKS_KEY });
+            const previous = queryClient.getQueryData<Task[]>(TASKS_KEY);
+
+            queryClient.setQueryData<Task[]>(TASKS_KEY, (old = []) => [
+                {
+                    _id: `temp-${Date.now()}`,
+                    title: newTask.title,
+                    description: newTask.description,
+                    status: newTask.status || 'pending',
+                    dueDate: newTask.dueDate,
+                    owner: '',
+                    createdAt: new Date().toISOString(),
+                },
+                ...old,
+            ]);
+
+            return { previous };
+        },
+        onError: (_err, _newTask, context) => {
+            if (context?.previous) {
+                queryClient.setQueryData(TASKS_KEY, context.previous);
+            }
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: TASKS_KEY });
         },
     });
@@ -46,7 +70,26 @@ export const useUpdateTaskMutation = () => {
     return useMutation({
         mutationFn: ({ id, ...data }: UpdateTaskData) =>
             useApi<Task>('PUT', `/api/tasks/${id}`, data),
-        onSuccess: () => {
+        onMutate: async (updatedTask) => {
+            await queryClient.cancelQueries({ queryKey: TASKS_KEY });
+            const previous = queryClient.getQueryData<Task[]>(TASKS_KEY);
+
+            queryClient.setQueryData<Task[]>(TASKS_KEY, (old = []) =>
+                old.map((task) =>
+                    task._id === updatedTask.id
+                        ? { ...task, ...updatedTask, _id: task._id }
+                        : task,
+                ),
+            );
+
+            return { previous };
+        },
+        onError: (_err, _updatedTask, context) => {
+            if (context?.previous) {
+                queryClient.setQueryData(TASKS_KEY, context.previous);
+            }
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: TASKS_KEY });
         },
     });
@@ -57,7 +100,22 @@ export const useDeleteTaskMutation = () => {
     return useMutation({
         mutationFn: (id: string) =>
             useApi<{ message: string }>('DELETE', `/api/tasks/${id}`),
-        onSuccess: () => {
+        onMutate: async (deletedId) => {
+            await queryClient.cancelQueries({ queryKey: TASKS_KEY });
+            const previous = queryClient.getQueryData<Task[]>(TASKS_KEY);
+
+            queryClient.setQueryData<Task[]>(TASKS_KEY, (old = []) =>
+                old.filter((task) => task._id !== deletedId),
+            );
+
+            return { previous };
+        },
+        onError: (_err, _deletedId, context) => {
+            if (context?.previous) {
+                queryClient.setQueryData(TASKS_KEY, context.previous);
+            }
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: TASKS_KEY });
         },
     });

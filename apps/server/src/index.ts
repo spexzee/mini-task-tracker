@@ -3,6 +3,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import config from './config';
 import connectDB from './config/db';
+import connectRedis from './config/redis';
+import authRoutes from './routes/auth.routes';
+import taskRoutes from './routes/task.routes';
 
 const app = express();
 
@@ -19,14 +22,8 @@ app.get('/api/health', (_req, res) => {
     });
 });
 
-import authRoutes from './routes/auth.routes';
-
-import taskRoutes from './routes/task.routes';
-
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
-
-import connectRedis from './config/redis';
 
 const startServer = async () => {
     await connectDB();
@@ -36,6 +33,9 @@ const startServer = async () => {
     });
 };
 
-startServer();
+// Only start server if this file is run directly (not imported by tests)
+if (require.main === module) {
+    startServer();
+}
 
 export default app;

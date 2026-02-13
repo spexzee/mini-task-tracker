@@ -1,21 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Task Tracker",
-  description: "Mini Task Tracker - Manage your tasks efficiently",
+  title: "TaskFlow — Smart Task Tracker",
+  description: "A beautiful, modern task management app. Organize, track, and complete your tasks with ease.",
 };
 
 export default function RootLayout({
@@ -25,7 +14,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+        />
+        <meta name="theme-color" content="#0f0c29" />
+      </head>
+      <body>
         <Providers>
           {children}
         </Providers>
@@ -33,4 +29,3 @@ export default function RootLayout({
     </html>
   );
 }
-

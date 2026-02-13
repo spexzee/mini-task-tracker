@@ -9,8 +9,8 @@
         "build": "tsc",
         "start": "node dist/index.js",
         "lint": "eslint src --ext .ts",
-        "test": "jest --passWithNoTests",
-        "test:coverage": "jest --coverage --passWithNoTests",
+        "test": "jest --forceExit --passWithNoTests",
+        "test:coverage": "jest --coverage --forceExit --passWithNoTests",
         "clean": "rimraf dist coverage"
     },
     "dependencies": {

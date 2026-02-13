@@ -1,6 +1,6 @@
 # 📋 Mini Task Tracker
 
-A full-stack Task Tracker web application built with **Next.js** (frontend) and **Node.js + Express** (backend), using **MongoDB** for persistence and **Redis** for caching.
+A full-stack Task Tracker web application built with **Next.js** + **MUI** (frontend) and **Node.js + Express** (backend), using **MongoDB** for persistence and **Redis** for caching.
 
 ## 🏗️ Architecture
 
@@ -10,7 +10,7 @@ This is a **monorepo** managed with npm workspaces:
 task-tracker/
 ├── apps/
 │   ├── server/        # Backend - Express + TypeScript + Mongoose + Redis
-│   └── web/           # Frontend - Next.js + TypeScript
+│   └── web/           # Frontend - Next.js + TypeScript + MUI
 ├── package.json       # Root workspace config
 ├── tsconfig.base.json # Shared TypeScript configuration
 └── README.md
@@ -22,14 +22,26 @@ task-tracker/
 - **Runtime**: Node.js + TypeScript
 - **Framework**: Express.js
 - **Database**: MongoDB (Mongoose ODM)
-- **Caching**: Redis
+- **Caching**: Redis (per-user task cache with auto-invalidation)
 - **Auth**: JWT + bcrypt
-- **Testing**: Jest + Supertest
+- **Testing**: Jest + Supertest + mongodb-memory-server
 
 ### Frontend
 - **Framework**: Next.js (App Router)
 - **Language**: TypeScript
-- **Styling**: CSS Modules
+- **UI Library**: Material UI (MUI) v7 + Emotion
+- **State**: React Query (TanStack) with optimistic updates
+- **HTTP Client**: Axios
+
+## ✨ Features
+
+- **Authentication** — JWT-based signup & login with secure password hashing
+- **Task CRUD** — Create, read, update, and delete tasks
+- **Dark / Light Mode** — Toggle theme with localStorage persistence
+- **Task Filtering** — Filter by status (All / Pending / Completed) and sort by date
+- **Optimistic UI** — Instant UI updates before server confirms
+- **Redis Caching** — Server-side caching of task queries with auto-invalidation
+- **Responsive Design** — Mobile-friendly layout with FAB for task creation
 
 ## 🚀 Getting Started
 
@@ -57,7 +69,11 @@ npm install
 # Copy the example env file for the backend
 cp apps/server/.env.example apps/server/.env
 
-# Edit the .env file with your actual values
+# Edit the .env file with your actual values:
+# PORT=3001
+# MONGO_URI=mongodb://localhost:27017/task-tracker
+# REDIS_URL=redis://localhost:6379
+# JWT_SECRET=your-secret-key
 ```
 
 ### Running the Application
@@ -85,12 +101,16 @@ npm test
 
 # Run tests with coverage report
 npm run test:coverage
+
+# Run backend tests only
+npm run test -w apps/server
 ```
 
 ## 📡 API Endpoints
 
 | Method | Endpoint            | Description              | Auth Required |
 |--------|---------------------|--------------------------|:---:|
+| GET    | `/api/health`       | Health check             | ❌ |
 | POST   | `/api/auth/signup`  | Create new user          | ❌ |
 | POST   | `/api/auth/login`   | Authenticate user (JWT)  | ❌ |
 | GET    | `/api/tasks`        | List tasks for user      | ✅ |
