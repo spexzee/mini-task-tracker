@@ -25,6 +25,10 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 
+app.get('/', (req, res) => {
+    res.send('Todo server running fine!')
+})
+
 const startServer = async () => {
     await connectDB();
     await connectRedis();
