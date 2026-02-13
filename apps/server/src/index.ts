@@ -14,11 +14,28 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Connection middleware to ensure DB is connected before handling requests
+const ensureConnections = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    try {
+        await connectDB();
+        await connectRedis();
+        next();
+    } catch (error) {
+        console.error('Connection middleware error:', error);
+        res.status(500).json({ message: 'Database connection error' });
+    }
+};
+
+if (config.nodeEnv !== 'test') {
+    app.use(ensureConnections);
+}
+
 app.get('/api/health', (_req, res) => {
     res.json({
         status: 'ok',
         timestamp: new Date().toISOString(),
         environment: config.nodeEnv,
+        dbState: ['disconnected', 'connected', 'connecting', 'disconnecting'][require('mongoose').connection.readyState]
     });
 });
 
@@ -30,14 +47,18 @@ app.get('/', (req, res) => {
 })
 
 const startServer = async () => {
-    await connectDB();
-    await connectRedis();
-    app.listen(config.port, () => {
-        console.log(`🚀 Server running on http://localhost:${config.port}`);
-    });
+    try {
+        await connectDB();
+        await connectRedis();
+        app.listen(config.port, () => {
+            console.log(`🚀 Server running on http://localhost:${config.port}`);
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error);
+    }
 };
 
-// Only start server if this file is run directly (not imported by tests)
+// Start server if run directly
 if (require.main === module) {
     startServer();
 }

@@ -28,7 +28,8 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
             res.status(400).json({ message: messages.join(', ') });
             return;
         }
-        res.status(500).json({ message: 'Server error' });
+        console.error('Signup error:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 
@@ -56,8 +57,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         const token = generateToken(user._id.toString());
 
         res.json({ token, user });
-    } catch {
-        res.status(500).json({ message: 'Server error' });
+    } catch (error: any) {
+        console.error('Login error:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 
