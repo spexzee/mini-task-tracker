@@ -19,7 +19,9 @@ app.get('/api/health', (_req, res) => {
     });
 });
 
-// TODO: Mount auth routes
+import authRoutes from './routes/auth.routes';
+
+app.use('/api/auth', authRoutes);
 // TODO: Mount task routes
 
 const startServer = async () => {
