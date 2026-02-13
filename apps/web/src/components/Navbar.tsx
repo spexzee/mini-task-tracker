@@ -88,56 +88,6 @@ export default function Navbar({ userName, onLogout, showUserControls = false }:
                 )}
 
                 {/* Theme toggle switch */}
-                {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', height: 32 }}>
-                        <LightMode
-                            sx={{
-                                fontSize: 18,
-                                color: isDark ? 'text.secondary' : 'warning.main',
-                                transition: 'color 0.3s',
-                            }}
-                        />
-                    </Box>
-                    <Switch
-                        checked={isDark}
-                        onChange={colorMode.toggleColorMode}
-                        size="small"
-                        slotProps={{ input: { 'aria-label': 'toggle dark mode' } as React.InputHTMLAttributes<HTMLInputElement> }}
-                        sx={{
-                            '& .MuiSwitch-switchBase': {
-                                padding: 0,
-                                top: 4,
-                                left: 4,
-                                '&.Mui-checked': {
-                                    transform: 'translateX(14px)',
-                                    '& + .MuiSwitch-track': {
-                                        opacity: 1,
-                                    },
-                                },
-                            },
-                            '& .MuiSwitch-thumb': {
-                                width: 14,
-                                height: 14,
-                                boxShadow: 'none',
-                                bgcolor: isDark ? '#1a1a2e' : '#fbbf24',
-                            },
-                            '& .MuiSwitch-track': {
-                                borderRadius: 10,
-                                opacity: 1,
-                                bgcolor: isDark ? '#4c4c6d' : '#e0e7ff',
-                            },
-                        }}
-                    />
-                    <Box sx={{ display: 'flex', alignItems: 'center', height: 32 }}>
-                        <DarkMode
-                            sx={{
-                                fontSize: 18,
-                                color: isDark ? '#a78bfa' : 'text.secondary',
-                                transition: 'color 0.3s',
-                            }}
-                        />
-                    </Box>
-                </Box> */}
                 <ThemeToggle isDark={isDark} toggleColorMode={colorMode.toggleColorMode} />
 
                 {/* Logout */}
