@@ -21,8 +21,10 @@ app.get('/api/health', (_req, res) => {
 
 import authRoutes from './routes/auth.routes';
 
+import taskRoutes from './routes/task.routes';
+
 app.use('/api/auth', authRoutes);
-// TODO: Mount task routes
+app.use('/api/tasks', taskRoutes);
 
 const startServer = async () => {
     await connectDB();
